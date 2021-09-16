@@ -1,6 +1,6 @@
 /** @format */
 
-const { getYieldForPlant, getYieldForCrop, getTotalYield, getCostsForCrop } = require("./farm");
+const { getYieldForPlant, getYieldForCrop, getTotalYield, getCostsForCrop, getRevenueForCrop, getProfitForCrop } = require("./farm");
 
 describe("getYieldForPlant", () => {
   const corn = {
@@ -84,8 +84,8 @@ describe("getCostsForCrop", () => {
   });
   test("get total costs of another crop", () => {
     const wheat = {
-      name: "corn",
-      yield: 6,
+      name: "wheat",
+      yield: 2,
       cropCost: 1,
       sellPrice: 3,
       factors: {
@@ -106,15 +106,73 @@ describe("getCostsForCrop", () => {
         },
       },
     };
-    const crops = [{ crop: wheat, numCrops: 25 }];
-    expect(getCostsForCrop({ crops })).toBe(25);
+    const crops = [{ crop: wheat, numCrops: 1 }];
+    expect(getCostsForCrop({ crops })).toBe(1);
   });
 });
 
+describe("getRevenueForCrop", () => {
+  test("How much money you get for the crop", () => {
+    const wheat = {
+      name: "wheat",
+      yield: 2,
+      cropCost: 1,
+      sellPrice: 3,
+      factors: {
+        sun: {
+          low: -50,
+          medium: 0,
+          high: 50,
+        },
+        wind: {
+          low: +30,
+          medium: -10,
+          high: -50,
+        },
+        soil: {
+          low: 0,
+          medium: 0,
+          high: 0,
+        },
+      },
+    };
+    const crops = [{ crop: wheat, numCrops: 1 }];
+    expect(getRevenueForCrop({ crops })).toBe(6);
+  });
+});
 
+describe("getProfitForCrop", () => {
+  test("How much profit you get for the crop", () => {
+    const wheat = {
+      name: "wheat",
+      yield: 2,
+      cropCost: 1,
+      sellPrice: 3,
+      factors: {
+        sun: {
+          low: -50,
+          medium: 0,
+          high: 50,
+        },
+        wind: {
+          low: +30,
+          medium: -10,
+          high: -50,
+        },
+        soil: {
+          low: 0,
+          medium: 0,
+          high: 0,
+        },
+      },
+    };
+    const crops = [{ crop: wheat, numCrops: 1 }];
+    expect(getProfitForCrop({ crops })).toBe(5);
+  });
+});
 // List of things to make
 
 // getCostsForCrop  done!!-------
-// getRevenueForCrop;
-// getProfitForCrop;
+// getRevenueForCrop done!!-------
+// getProfitForCrop done!!-------
 // getTotalProfit;
