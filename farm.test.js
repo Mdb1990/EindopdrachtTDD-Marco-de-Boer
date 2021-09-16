@@ -1,6 +1,6 @@
 /** @format */
 
-const { getYieldForPlant, getYieldForCrop, getTotalYield } = require("./farm");
+const { getYieldForPlant, getYieldForCrop, getTotalYield, getCostsForCrop } = require("./farm");
 
 describe("getYieldForPlant", () => {
   const corn = {
@@ -53,3 +53,68 @@ describe("getTotalYield", () => {
     expect(getTotalYield({ crops })).toBe(0);
   });
 });
+
+describe("getCostsForCrop", () => {
+  test("Get the total cost of given crops", () => {
+    const corn = {
+      name: "corn",
+      yield: 3,
+      cropCost: 1.5,
+      sellPrice: 5,
+      factors: {
+        sun: {
+          low: -50,
+          medium: 0,
+          high: 50,
+        },
+        wind: {
+          low: 0,
+          medium: 0,
+          high: 0,
+        },
+        soil: {
+          low: 0,
+          medium: 0,
+          high: 0,
+        },
+      },
+    };
+    const crops = [{ crop: corn, numCrops: 262 }];
+    expect(getCostsForCrop({ crops })).toBe(393);
+  });
+  test("get total costs of another crop", () => {
+    const wheat = {
+      name: "corn",
+      yield: 6,
+      cropCost: 1,
+      sellPrice: 3,
+      factors: {
+        sun: {
+          low: -50,
+          medium: 0,
+          high: 50,
+        },
+        wind: {
+          low: +30,
+          medium: -10,
+          high: -50,
+        },
+        soil: {
+          low: 0,
+          medium: 0,
+          high: 0,
+        },
+      },
+    };
+    const crops = [{ crop: wheat, numCrops: 25 }];
+    expect(getCostsForCrop({ crops })).toBe(25);
+  });
+});
+
+
+// List of things to make
+
+// getCostsForCrop  done!!-------
+// getRevenueForCrop;
+// getProfitForCrop;
+// getTotalProfit;
