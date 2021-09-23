@@ -220,18 +220,4 @@ describe("getProfitForCrop", () => {
 // getCostsForCrop  done!!-------
 // getRevenueForCrop done!!-------
 // getProfitForCrop done!!-------
-// getTotalProfit;
-
-// DIT KOMT ERBIJ...
-
-// const getYieldForPlant = (plant, environmentFactors) => {
-//   if (environmentFactors.sun === "low") {
-//     return plant.yield * ((100 + plant.factors.sun.low) / 100);
-//   } else if (environmentFactors.sun === "medium") {
-//     return plant.yield;
-//   } else if (environmentFactors.sun === "high") {
-//     return plant.yield * ((100 + plant.factors.sun.high) / 100);
-//   } else {
-//     return plant.yield;
-//   }
-// };
+// getTotalProfit; done!!------
