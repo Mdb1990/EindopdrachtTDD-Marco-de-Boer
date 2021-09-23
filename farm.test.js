@@ -2,6 +2,8 @@
 
 const { getYieldForPlant, getYieldForCrop, getTotalYield, getCostsForCrop, getRevenueForCrop, getProfitForCrop } = require("./farm");
 
+// Test for the yield that you get from the plant.
+
 describe("getYieldForPlant", () => {
   const corn = {
     name: "corn",
@@ -10,6 +12,29 @@ describe("getYieldForPlant", () => {
 
   test("Get yield for plant with no environment factors", () => {
     expect(getYieldForPlant(corn)).toBe(30);
+  });
+  test("Get yield for crop with environment factors", () => {
+    const corn = {
+      name: "corn",
+      yield: 30,
+      factors: {
+        sun: {
+          low: -50,
+          medium: 0,
+          high: +50,
+        },
+        wind: {
+          low: +50,
+          medium: 0,
+          high: -30,
+        },
+      },
+    };
+    const environmentFactors = {
+      sun: "high",
+    };
+
+    expect(getYieldForPlant(corn, environmentFactors)).toBe(45);
   });
 });
 
@@ -24,6 +49,25 @@ describe("getYieldForCrop", () => {
       numCrops: 10,
     };
     expect(getYieldForCrop(input)).toBe(30);
+  });
+  test("Get yield for crop with environment factors", () => {
+    const corn = {
+      name: "corn",
+      yield: 3,
+      factors: {
+        sun: {
+          low: -50,
+          medium: 0,
+          high: 50,
+        },
+      },
+    };
+
+    const environmentFactors = {
+      sun: "low",
+    };
+    const crops = { crop: corn, numCrops: 12 };
+    expect(getYieldForCrop(crops, environmentFactors)).toBe(18);
   });
 });
 
@@ -156,7 +200,7 @@ describe("getProfitForCrop", () => {
         },
         wind: {
           low: +30,
-          medium: -10,
+          medium: 0,
           high: -50,
         },
         soil: {
@@ -166,7 +210,8 @@ describe("getProfitForCrop", () => {
         },
       },
     };
-    const crops = [{ crop: wheat, numCrops: 1 }];
+    const environmentFactors = { sun: "low", wind: "medium" };
+    const crops = [{ crop: wheat, numCrops: 1, environmentFactors }];
     expect(getProfitForCrop({ crops })).toBe(5);
   });
 });
@@ -176,3 +221,17 @@ describe("getProfitForCrop", () => {
 // getRevenueForCrop done!!-------
 // getProfitForCrop done!!-------
 // getTotalProfit;
+
+// DIT KOMT ERBIJ...
+
+// const getYieldForPlant = (plant, environmentFactors) => {
+//   if (environmentFactors.sun === "low") {
+//     return plant.yield * ((100 + plant.factors.sun.low) / 100);
+//   } else if (environmentFactors.sun === "medium") {
+//     return plant.yield;
+//   } else if (environmentFactors.sun === "high") {
+//     return plant.yield * ((100 + plant.factors.sun.high) / 100);
+//   } else {
+//     return plant.yield;
+//   }
+// };

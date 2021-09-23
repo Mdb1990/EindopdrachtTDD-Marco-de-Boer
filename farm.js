@@ -1,8 +1,32 @@
 /** @format */
 
-const getYieldForPlant = (crop) => crop.yield;
+const getYieldForPlant = (crop, environmentFactors) => {
+  if (environmentFactors) {
+    if (environmentFactors.sun === "low") {
+      return crop.yield * ((100 + crop.factors.sun.low) / 100);
+    } else if (environmentFactors.sun === "medium") {
+      return crop.yield;
+    } else if (environmentFactors.sun === "high") {
+      return crop.yield * ((100 + crop.factors.sun.high) / 100);
+    }
+  } else {
+    return crop.yield;
+  }
+};
 
-const getYieldForCrop = (input) => input.crop.yield * input.numCrops;
+const getYieldForCrop = (crop, environmentFactors) => {
+  if (environmentFactors) {
+    if (environmentFactors.sun === "low") {
+      return crop.numCrops * crop.crop.yield * ((100 + crop.crop.factors.sun.low) / 100);
+    } else if (environmentFactors.sun === "medium") {
+      return crop.numCrops * crop.crop.yield;
+    } else if (environmentFactors.sun === "high") {
+      return crop.numCrops * crop.crop.yield * ((100 + crop.crop.factors.sun.high) / 100);
+    }
+  } else {
+    return crop.numCrops * crop.crop.yield;
+  }
+};
 
 const getTotalYield = (crop) => {
   const crops = crop.crops;
