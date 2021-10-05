@@ -1,6 +1,16 @@
 /** @format */
 
-const { getYieldForPlant, getYieldForCrop, getTotalYield, getCostsForCrop, getRevenueForCrop, getProfitForCrop } = require("./farm");
+const {
+  getYieldForPlant,
+  getYieldForCrop,
+  getTotalYield,
+  getCostsForCrop,
+  getRevenueForCrop,
+  getProfitForCrop,
+  getYieldForPlantFactors,
+  getYieldForCropFactors,
+  getTotalYieldFactors,
+} = require("./farm");
 
 // Test for the yield that you get from the plant.
 
@@ -13,18 +23,20 @@ describe("getYieldForPlant", () => {
   test("Get yield for plant with no environment factors", () => {
     expect(getYieldForPlant(corn)).toBe(30);
   });
-  test("Get yield for crop with environment factors", () => {
+  test("Get yield for plant with environment factors", () => {
     const corn = {
       name: "corn",
       yield: 30,
+      cropCost: 1.5,
+      sellPrice: 5,
       factors: {
         sun: {
-          low: -50,
+          low: -30,
           medium: 0,
-          high: +50,
+          high: 50,
         },
         wind: {
-          low: +50,
+          low: 50,
           medium: 0,
           high: -30,
         },
@@ -32,9 +44,10 @@ describe("getYieldForPlant", () => {
     };
     const environmentFactors = {
       sun: "high",
+      wind: "low",
     };
 
-    expect(getYieldForPlant(corn, environmentFactors)).toBe(45);
+    expect(getYieldForPlantFactors(corn, environmentFactors)).toBe(67.5);
   });
 });
 
@@ -53,21 +66,29 @@ describe("getYieldForCrop", () => {
   test("Get yield for crop with environment factors", () => {
     const corn = {
       name: "corn",
-      yield: 3,
+      yield: 30,
+      cropCost: 1.5,
+      sellPrice: 5,
       factors: {
         sun: {
-          low: -50,
+          low: -30,
           medium: 0,
           high: 50,
+        },
+        wind: {
+          low: 50,
+          medium: 0,
+          high: -30,
         },
       },
     };
 
     const environmentFactors = {
       sun: "low",
+      wind: "low",
     };
-    const crops = { crop: corn, numCrops: 12 };
-    expect(getYieldForCrop(crops, environmentFactors)).toBe(18);
+    const crops = { crop: corn, numCrops: 9 };
+    expect(getYieldForCropFactors(crops, environmentFactors)).toBe(283.5);
   });
 });
 
@@ -96,6 +117,57 @@ describe("getTotalYield", () => {
     const crops = [{ crop: corn, numCrops: 0 }];
     expect(getTotalYield({ crops })).toBe(0);
   });
+
+  test("Calculate total yield with factors", () => {
+    const corn = {
+      name: "corn",
+      yield: 3,
+      cropCost: 1.5,
+      sellPrice: 5,
+      factors: {
+        sun: {
+          low: -50,
+          medium: 0,
+          high: 50,
+        },
+        wind: {
+          low: 50,
+          medium: 0,
+          high: -30,
+        },
+      },
+    };
+    const wheat = {
+      name: "wheat",
+      yield: 2,
+      cropCost: 1,
+      sellPrice: 3,
+      factors: {
+        sun: {
+          low: -50,
+          medium: 0,
+          high: 50,
+        },
+        wind: {
+          low: 30,
+          medium: -10,
+          high: -50,
+        },
+      },
+    };
+
+    const environmentFactors = {
+      sun: "low",
+      wind: "low",
+    };
+
+    const crops = [
+      { crop: corn, numCrops: 22 },
+      { crop: wheat, numCrops: 10 },
+    ];
+
+    expect(getTotalYieldFactors(crops, environmentFactors)).toBe(62.5);
+  });
 });
 
 describe("getCostsForCrop", () => {
@@ -112,14 +184,9 @@ describe("getCostsForCrop", () => {
           high: 50,
         },
         wind: {
-          low: 0,
+          low: 50,
           medium: 0,
-          high: 0,
-        },
-        soil: {
-          low: 0,
-          medium: 0,
-          high: 0,
+          high: -30,
         },
       },
     };
@@ -139,7 +206,7 @@ describe("getCostsForCrop", () => {
           high: 50,
         },
         wind: {
-          low: +30,
+          low: 30,
           medium: -10,
           high: -50,
         },
@@ -169,7 +236,7 @@ describe("getRevenueForCrop", () => {
           high: 50,
         },
         wind: {
-          low: +30,
+          low: 30,
           medium: -10,
           high: -50,
         },
@@ -203,18 +270,15 @@ describe("getProfitForCrop", () => {
           medium: 0,
           high: -50,
         },
-        soil: {
-          low: 0,
-          medium: 0,
-          high: 0,
-        },
       },
     };
+
     const environmentFactors = { sun: "low", wind: "medium" };
-    const crops = [{ crop: wheat, numCrops: 1, environmentFactors }];
-    expect(getProfitForCrop({ crops })).toBe(5);
+    const crops = [{ crop: wheat, numCrops: 1 }];
+    expect(getProfitForCrop({ crops }, environmentFactors)).toBe(5);
   });
 });
+
 // List of things to make
 
 // getCostsForCrop  done!!-------

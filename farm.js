@@ -1,31 +1,53 @@
 /** @format */
 
-const getYieldForPlant = (crop, environmentFactors) => {
-  if (environmentFactors) {
-    if (environmentFactors.sun === "low") {
-      return crop.yield * ((100 + crop.factors.sun.low) / 100);
-    } else if (environmentFactors.sun === "medium") {
-      return crop.yield;
-    } else if (environmentFactors.sun === "high") {
-      return crop.yield * ((100 + crop.factors.sun.high) / 100);
-    }
-  } else {
-    return crop.yield;
-  }
+const getYieldForPlant = (crop) => {
+  return crop.yield;
 };
 
-const getYieldForCrop = (crop, environmentFactors) => {
-  if (environmentFactors) {
-    if (environmentFactors.sun === "low") {
-      return crop.numCrops * crop.crop.yield * ((100 + crop.crop.factors.sun.low) / 100);
-    } else if (environmentFactors.sun === "medium") {
-      return crop.numCrops * crop.crop.yield;
-    } else if (environmentFactors.sun === "high") {
-      return crop.numCrops * crop.crop.yield * ((100 + crop.crop.factors.sun.high) / 100);
-    }
-  } else {
-    return crop.numCrops * crop.crop.yield;
+const getYieldForPlantFactors = (crop, environmentFactors) => {
+  const sun = crop.factors.sun[environmentFactors.sun] / 100 + 1;
+  const wind = crop.factors.wind[environmentFactors.wind] / 100 + 1;
+  if (environmentFactors.sun === "low") {
+    sunValue = crop.yield * sun;
+  } else if (environmentFactors.sun === "medium") {
+    sunValue = crop.yield * sun;
+  } else if (environmentFactors.sun === "high") {
+    sunValue = crop.yield * sun;
   }
+  if (environmentFactors.wind === "low") {
+    windAndSunValue = sunValue * wind;
+  } else if (environmentFactors.wind === "medium") {
+    windAndSunValue = sunValue * wind;
+  } else if (environmentFactors.wind === "high") {
+    windAndSunValue = sunValue * wind;
+  }
+  return windAndSunValue;
+};
+
+const getYieldForCrop = (crop) => {
+  const cropYield = crop.numCrops * crop.crop.yield;
+  return cropYield;
+};
+
+const getYieldForCropFactors = (crop, environmentFactors) => {
+  const cropYield = crop.numCrops * crop.crop.yield;
+  const sun = crop.crop.factors.sun[environmentFactors.sun] / 100 + 1;
+  const wind = crop.crop.factors.wind[environmentFactors.wind] / 100 + 1;
+  if (environmentFactors.sun === "low") {
+    sunValue = cropYield * sun;
+  } else if (environmentFactors.sun === "medium") {
+    sunValue = cropYield * sun;
+  } else if (environmentFactors.sun === "high") {
+    sunValue = cropYield * sun;
+  }
+  if (environmentFactors.wind === "low") {
+    windAndSunValue = sunValue * wind;
+  } else if (environmentFactors.wind === "medium") {
+    windAndSunValue = sunValue * wind;
+  } else if (environmentFactors.wind === "high") {
+    windAndSunValue = sunValue * wind;
+  }
+  return Number(windAndSunValue.toFixed(1));
 };
 
 const getTotalYield = (crop) => {
@@ -33,6 +55,31 @@ const getTotalYield = (crop) => {
   const addValues = (value1, value2) => value1 + value2;
   const mapCrops = crops.map((obj) => obj.numCrops * obj.crop.yield);
   return mapCrops.reduce(addValues);
+};
+
+const getTotalYieldFactors = (crop, environmentFactors) => {
+  let sum = 0;
+  crop.forEach((crop) => {
+    const totalYield = crop.numCrops * crop.crop.yield;
+    const sun = crop.crop.factors.sun[environmentFactors.sun] / 100 + 1;
+    const wind = crop.crop.factors.wind[environmentFactors.wind] / 100 + 1;
+    if (environmentFactors.sun === "low") {
+      sunValue = totalYield * sun;
+    } else if (environmentFactors.sun === "medium") {
+      sunValue = totalYield * sun;
+    } else if (environmentFactors.sun === "high") {
+      sunValue = totalYield * sun;
+    }
+    if (environmentFactors.wind === "low") {
+      windAndSunValue = sunValue * wind;
+    } else if (environmentFactors.wind === "medium") {
+      windAndSunValue = sunValue * wind;
+    } else if (environmentFactors.wind === "high") {
+      windAndSunValue = sunValue * wind;
+    }
+    sum += windAndSunValue;
+  });
+  return sum;
 };
 
 const getCostsForCrop = (crops) => {
@@ -58,9 +105,12 @@ const getProfitForCrop = (crops) => {
 
 module.exports = {
   getYieldForPlant,
+  getYieldForPlantFactors,
   getYieldForCrop,
+  getYieldForCropFactors,
   getTotalYield,
   getCostsForCrop,
   getRevenueForCrop,
   getProfitForCrop,
+  getTotalYieldFactors,
 };
