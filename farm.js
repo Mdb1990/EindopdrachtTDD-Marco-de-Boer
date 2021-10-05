@@ -96,6 +96,35 @@ const getRevenueForCrop = (crops) => {
   return mapCrops.reduce(addValues);
 };
 
+const getRevenueForCropFactors = (crop, environmentFactors) => {
+  let sum = 0;
+  let rev = 0;
+  crop.forEach((crop) => {
+    const totalYield = crop.numCrops * crop.crop.yield;
+    const sun = crop.crop.factors.sun[environmentFactors.sun] / 100 + 1;
+    const wind = crop.crop.factors.wind[environmentFactors.wind] / 100 + 1;
+
+    if (environmentFactors.sun === "low") {
+      sunValue = totalYield * sun;
+    } else if (environmentFactors.sun === "medium") {
+      sunValue = totalYield * sun;
+    } else if (environmentFactors.sun === "high") {
+      sunValue = totalYield * sun;
+    }
+    if (environmentFactors.wind === "low") {
+      windAndSunValue = sunValue * wind;
+    } else if (environmentFactors.wind === "medium") {
+      windAndSunValue = sunValue * wind;
+    } else if (environmentFactors.wind === "high") {
+      windAndSunValue = sunValue * wind;
+    }
+    sum += windAndSunValue;
+    const revenue = sum * crop.crop.sellPrice;
+    rev += revenue;
+  });
+  return rev;
+};
+
 const getProfitForCrop = (crops) => {
   const crop = crops.crops;
   const addValues = (value1, value2) => value1 + value2;
@@ -113,4 +142,5 @@ module.exports = {
   getRevenueForCrop,
   getProfitForCrop,
   getTotalYieldFactors,
+  getRevenueForCropFactors,
 };
