@@ -11,6 +11,7 @@ const {
   getYieldForCropFactors,
   getTotalYieldFactors,
   getRevenueForCropFactors,
+  getTotalProfitForCrop,
 } = require("./farm");
 
 // Test for the yield that you get from the plant.
@@ -224,7 +225,7 @@ describe("getCostsForCrop", () => {
 });
 
 describe("getRevenueForCrop", () => {
-  test("How much money you get for the crop", () => {
+  test("How much revenue you get for the crop", () => {
     const wheat = {
       name: "wheat",
       yield: 2,
@@ -308,7 +309,55 @@ describe("getProfitForCrop", () => {
     };
 
     const environmentFactors = { sun: "low", wind: "medium" };
-    const crops = [{ crop: wheat, numCrops: 1 }];
-    expect(getProfitForCrop({ crops }, environmentFactors)).toBe(5);
+    const crops = [{ crop: wheat, numCrops: 25 }];
+    expect(getProfitForCrop(crops, environmentFactors)).toBe(50);
+  });
+});
+
+describe("getTotalProfitForCrop", () => {
+  test("total Profit you get for the crops", () => {
+    const wheat = {
+      name: "wheat",
+      yield: 2,
+      cropCost: 1,
+      sellPrice: 3,
+      factors: {
+        sun: {
+          low: -50,
+          medium: 0,
+          high: 50,
+        },
+        wind: {
+          low: 30,
+          medium: 0,
+          high: -50,
+        },
+      },
+    };
+    const corn = {
+      name: "corn",
+      yield: 3,
+      cropCost: 1.5,
+      sellPrice: 5,
+      factors: {
+        sun: {
+          low: -50,
+          medium: 0,
+          high: 50,
+        },
+        wind: {
+          low: 50,
+          medium: 0,
+          high: -30,
+        },
+      },
+    };
+    const environmentFactors = { sun: "low", wind: "medium" };
+
+    const crops = [
+      { crop: wheat, numCrops: 25 },
+      { crop: corn, numCrops: 10 },
+    ];
+    expect(getTotalProfitForCrop(crops, environmentFactors)).toBe(110);
   });
 });
