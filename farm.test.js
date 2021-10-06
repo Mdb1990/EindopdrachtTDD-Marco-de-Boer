@@ -14,8 +14,6 @@ const {
   getTotalProfitForCrop,
 } = require("./farm");
 
-// Test for the yield that you get from the plant.
-
 describe("getYieldForPlant", () => {
   const corn = {
     name: "corn",
